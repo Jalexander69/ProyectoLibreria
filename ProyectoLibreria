@@ -1,0 +1,116 @@
+
+import datetime
+
+class Biblioteca:
+    def __init__(self):
+        self.prestamos = []
+
+        # Definimos para guardar los datos ingresados
+    def guardar_prestamo(self):
+            # Solicito los datos al usuario
+        nombre = input("Ingrese El Nombre: ").strip()
+        apellido = input("Ingrese El Apellido: ").strip()
+        id_libro = input("Ingrese El ID Del Libro: ").strip()
+        fecha_prestamo = input("Ingrese la Fecha Del Prestamo (YYYY-MM-DD): ").strip()
+        fecha_entrega = input("Ingrese La Fecha De Entrega (YYYY-MM-DD): ").strip()
+
+            # Valido que los datos esten bien ingresados
+        if not (nombre and apellido and id_libro and fecha_prestamo and fecha_entrega):
+            print("Datos Mal Ingresados.")
+            return
+        
+        try:
+                #Convierto las fechas ingresadas en datetime
+            fecha_prestamo = datetime.datetime.strptime(fecha_prestamo, "%Y-%m-%d").date()
+            fecha_entrega = datetime.datetime.strptime(fecha_entrega, "%Y-%m-%d").date()
+        except ValueError:
+            print("Fecha Mal Ingresada.")
+            return
+        
+            # Creo un diccionario con el orden que debe guardar
+        prestamo = {
+            'nombre': nombre,
+            'apellido': apellido,
+            'id_libro': id_libro,
+            'fecha_prestamo': fecha_prestamo,
+            'fecha_entrega': fecha_entrega
+        }
+
+            # Guarda cada prestamo registrado
+        self.prestamos.append(prestamo)
+        print("Prestamo Guardado.")
+
+        # Definimos para listar los datos ingresados
+    def listar_prestamos(self):
+        if not self.prestamos:
+            print("No hay Prestamos.")
+        else:
+                # Muestra los datos ingresados enumerados en orden
+            for i, prestamo in enumerate(self.prestamos, +1):
+                print(f"Prestamo {i}: {prestamo['nombre']} {prestamo['apellido']}, "
+                      f"ID Del Libro: {prestamo['id_libro']}, "
+                      f"Fecha Del Prestamo: {prestamo['fecha_prestamo']}, "
+                      f"Fecha De Entrega: {prestamo['fecha_entrega']}")
+                
+        # Definimos imprimir para mostrar los datos del prestamo segun su id 
+    def imprimir_recibo(self):
+        id_libro = input("Ingrese El ID Del Libro: ").strip()
+
+            # Creo el formato del texto txt
+        for prestamo in self.prestamos:
+            if prestamo['id_libro'] == id_libro:
+                recibo_txt = (
+                    "\n"
+                    f"Nombre: {prestamo['nombre']} {prestamo['apellido']}\n"
+                    f"ID Del Libro: {prestamo['id_libro']}\n"
+                    f"Fecha Del Prestamo: {prestamo['fecha_prestamo']}\n"
+                    f"Fecha De Entrega: {prestamo['fecha_entrega']}\n"
+                    "-----------------------------\n"
+                )
+
+                    # Guardo el formato txt y lo muestro al seleccionar la opcion
+                archivo_recibo = f"recibo_libro_{id_libro}.txt"
+                with open(archivo_recibo, 'w') as archivo:
+                    archivo.write(recibo_txt)
+                print(f"Recibo Del Prestamo {recibo_txt}")
+                return
+        print("No Se Encuentra Esa ID Del Libro.")
+
+    # Defino el menu y muestro las opciones a ingresar
+def menu():
+    print("\n| Menu De La Libreria |")
+    print(" -------------------")
+    print("1.- Registrar El Prestamo.")
+    print("2.- Listar Todos Los Prestamos.")
+    print("3.- Imprimir Recibo De Prestamo.")
+    print("4.- Salir Del Programa.")
+
+def main():
+    biblioteca = Biblioteca()
+
+    while True:
+        # Muestro el menu de opciones
+        menu()
+        # solicito una opcion al usuario
+        opcion = input("\nIngrese Una Opcion: ").strip() 
+
+        if opcion == "1":
+            # Llamo a la funcion para ingresar un prestamo
+            biblioteca.guardar_prestamo()
+        elif opcion == "2":
+            # Llamo a la funcion para listar los prestamos
+            biblioteca.listar_prestamos()
+        elif opcion == "3":
+            # Llamo a la funcion para imprimir los recibos
+            biblioteca.imprimir_recibo()
+        elif opcion == "4":
+            # Cierro el programa
+            print("Fin Del Programa.")
+            break
+        else:
+            # Le indico que esta erronea la respuesta
+            print("Opcion Invalida. Ingrese Un Numero Valido.")
+
+    # Ejecuta la funcion principal
+if __name__ == "__main__":
+    main()
